@@ -65,8 +65,8 @@ footer{text-align:center;color:#8290a2;font-size:11px;padding:0 15px 25px}
  <div id="fileList" class="file-list"></div>
  <div class="options">
   <h2>2. Pengaturan logo BCA</h2>
-  <label class="check"><input type="checkbox" id="logoEnabled" checked><span>Tampilkan logo BCA pada setiap kartu</span></label>
-  <div id="logoControls">
+  <label class="check"><input type="checkbox" id="logoEnabled"><span>Tampilkan logo BCA pada setiap kartu</span></label>
+  <div id="logoControls" hidden>
    <div class="control"><div class="control-head"><label for="logoSize">Ukuran logo</label><output id="sizeValue">32%</output></div><input id="logoSize" type="range" min="5" max="65" value="32"></div>
    <div class="control"><div class="control-head"><label for="logoX">Posisi horizontal (kiri → kanan)</label><output id="xValue">2%</output></div><input id="logoX" type="range" min="0" max="90" value="2"></div>
    <div class="control"><div class="control-head"><label for="logoY">Posisi vertikal (atas → bawah)</label><output id="yValue">82%</output></div><input id="logoY" type="range" min="0" max="95" value="82"></div>
@@ -131,8 +131,7 @@ function render(){
  });
  count.textContent=items.length?`${items.length} gambar · ${Math.ceil(items.length/2)} lembar A4`:'Belum ada gambar';
  generate.disabled=!items.length;
- $('logoControls').style.opacity=$('logoEnabled').checked?'1':'.45';
- $('logoControls').style.pointerEvents=$('logoEnabled').checked?'auto':'none';
+ $('logoControls').hidden=!$('logoEnabled').checked;
  if(!items.length){pages.innerHTML='<div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div>';return;}
  pages.innerHTML='';
  for(let i=0;i<items.length;i+=2){
