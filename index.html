@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b4f91">
+<title>QRIS Print Studio</title>
+<style>
+:root{--blue:#07549b;--ink:#172033;--muted:#687386;--line:#e3e8ef;--bg:#f4f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#063d73,#0874bd);color:white;padding:26px max(20px,calc((100% - 1080px)/2))}
+header h1{font-size:clamp(23px,4vw,32px);margin:0 0 6px}header p{margin:0;color:#d9ebfa;font-size:14px}
+main{max-width:1080px;margin:26px auto;padding:0 18px 50px;display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:20px}
+.panel,.preview-panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 18px #152d4a0a}
+h2{font-size:17px;margin:0 0 14px}.drop{border:2px dashed #9db6cf;background:#f7fbff;border-radius:12px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s}.drop.drag{background:#eaf5ff;border-color:var(--blue)}.drop strong{display:block;margin:8px 0 4px}.drop small{color:var(--muted)}
+input[type=file]{display:none}.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:650;cursor:pointer;background:var(--blue);color:white}.btn.secondary{background:#eaf1f8;color:#17456e}.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.options{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}.check{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#35445a;line-height:1.45}.check input{margin-top:3px;accent-color:var(--blue)}
+.hint{font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0}.file-list{margin-top:16px;display:grid;gap:8px}.file-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:9px;font-size:12px}.thumb{width:38px;height:48px;object-fit:cover;background:#f1f4f7;border-radius:4px}.filename{flex:1;min-width:0;overflow-wrap:anywhere}.remove{border:0;background:none;color:#b42318;font-size:18px;cursor:pointer}
+.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.preview-head h2{margin:0}.count{font-size:12px;color:var(--muted)}
+.pages{display:grid;gap:16px}.sheet{width:100%;aspect-ratio:297/210;background:white;border:1px solid #d8dee8;box-shadow:0 4px 15px #1c35500c;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}.half{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-right:1px dashed #cbd3de}.half:last-child{border:0}.half img.qr{width:100%;height:100%;object-fit:contain}.half .bca{position:absolute;left:1.2%;bottom:1.5%;width:32%;height:auto;max-height:9%;object-fit:contain;object-position:left bottom}
+.empty{height:250px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px}.empty span{font-size:36px;display:block;margin-bottom:8px}
+footer{text-align:center;color:#8290a2;font-size:11px;padding:0 15px 25px}
+@media(max-width:780px){main{grid-template-columns:1fr;margin-top:16px;padding:0 12px 32px;gap:14px}.panel,.preview-panel{padding:16px}.preview-panel{overflow:hidden}.sheet{min-width:480px}.pages{overflow-x:auto;padding-bottom:8px}.preview-head{align-items:flex-start;flex-direction:column}header{padding:22px 18px}}
+@media print{body{background:white}header,main .panel,.preview-head,footer{display:none!important}main{display:block;max-width:none;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none}.pages{display:block}.sheet{width:297mm;height:210mm;aspect-ratio:auto;border:0;box-shadow:none;page-break-after:always;break-after:page}.sheet:last-child{page-break-after:auto;break-after:auto}.half{border:0}.half:first-child{border-right:.2mm dashed #aaa}}
+</style>
+</head>
+<body>
+<header><h1>QRIS Print Studio</h1><p>Susun gambar QRIS menjadi lembar A4 landscape berisi dua kartu ukuran A5.</p></header>
+<main>
+<section class="panel">
+<h2>1. Upload gambar QRIS</h2>
+<label class="drop" id="drop" for="files"><span style="font-size:30px">⬆️</span><strong>Pilih atau tarik gambar ke sini</strong><small>JPG, PNG, atau WEBP · bisa lebih dari satu gambar</small></label>
+<input id="files" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+<div class="actions"><button class="btn secondary" id="choose">Pilih gambar</button><button class="btn secondary" id="clear">Hapus semua</button></div>
+<div id="fileList" class="file-list"></div>
+<div class="options">
+<h2>2. Pengaturan cetak</h2>
+<label class="check" style="margin-top:12px"><input type="checkbox" id="cut" checked><span>Tampilkan garis potong di tengah lembar A4 (tidak ikut dicetak tebal)</span></label>
+<p class="hint">Dua gambar ditempatkan berdampingan dalam satu lembar A4 landscape. Jika jumlah gambar ganjil, sisi terakhir akan dibiarkan kosong.</p>
+</div>
+<div class="actions"><button class="btn" id="generate" disabled>Generate PDF</button></div>
+<p class="hint">PDF dibuat langsung di browser. Gambar tidak diunggah ke server dan tidak membutuhkan database.</p>
+</section>
+<section class="preview-panel">
+<div class="preview-head"><h2>Pratinjau hasil</h2><span class="count" id="count">Belum ada gambar</span></div>
+<div id="pages" class="pages"><div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div></div>
+</section>
+</main>
+<footer>QRIS Print Studio · Siap digunakan di GitHub Pages · Pastikan QRIS terbaca sebelum dicetak massal.</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const fileInput=document.getElementById('files'),drop=document.getElementById('drop'),list=document.getElementById('fileList'),pages=document.getElementById('pages'),count=document.getElementById('count'),generate=document.getElementById('generate');
+let items=[];
+const logoUrl=new URL('assets/bca-logo.png',document.baseURI).href;
+document.getElementById('choose').onclick=()=>fileInput.click();
+fileInput.addEventListener('change',e=>{addFiles(e.target.files);fileInput.value=''});
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));
+drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+function addFiles(files){[...files].filter(f=>/^image\/(png|jpeg|webp)$/.test(f.type)).forEach(file=>{const url=URL.createObjectURL(file);items.push({file,url,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())})});render()}
+function render(){
+ list.innerHTML='';items.forEach((it,i)=>{const row=document.createElement('div');row.className='file-row';row.innerHTML=`<img class="thumb" src="${it.url}" alt=""><span class="filename"></span><button class="remove" title="Hapus gambar" aria-label="Hapus gambar">×</button>`;row.querySelector('.filename').textContent=it.file.name;row.querySelector('button').onclick=()=>{URL.revokeObjectURL(it.url);items.splice(i,1);render()};list.append(row)});
+ count.textContent=items.length?`${items.length} gambar · ${Math.ceil(items.length/2)} lembar A4`:'Belum ada gambar';generate.disabled=!items.length;
+ if(!items.length){pages.innerHTML='<div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div>';return}
+ pages.innerHTML='';for(let i=0;i<items.length;i+=2){const sheet=document.createElement('div');sheet.className='sheet';for(let j=0;j<2;j++){const half=document.createElement('div');half.className='half';if(items[i+j]){const img=document.createElement('img');img.className='qr';img.src=items[i+j].url;img.alt='QRIS '+(i+j+1);half.append(img);if(document.getElementById('logo').checked){const logo=document.createElement('img');logo.className='bca';logo.src=logoUrl;logo.alt='Logo BCA';half.append(logo)}}if(j===0&&document.getElementById('cut').checked)half.style.borderRight='1px dashed #9aa8b8';sheet.append(half)}pages.append(sheet)}
+}
+document.getElementById('clear').onclick=()=>{items.forEach(x=>URL.revokeObjectURL(x.url));items=[];render()};
+document.getElementById('logo').onchange=render;document.getElementById('cut').onchange=render;
+function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src})}
+function drawFit(pdf,img,x,y,w,h){const scale=Math.min(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale;pdf.addImage(img,'PNG',x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+generate.onclick=async()=>{
+ if(!items.length)return;generate.disabled=true;generate.textContent='Membuat PDF…';
+ try{
+ const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
+ const logo=document.getElementById('logo').checked?await loadImage(logoUrl):null;
+ for(let i=0;i<items.length;i+=2){if(i>0)pdf.addPage('a4','landscape');
+  for(let j=0;j<2;j++){const it=items[i+j];if(!it)continue;const im=await loadImage(it.url);const x=j*148.5;drawFit(pdf,im,x,0,148.5,210);
+   if(logo){const canvas=document.createElement('canvas');canvas.width=logo.naturalWidth;canvas.height=logo.naturalHeight;canvas.getContext('2d').drawImage(logo,0,0);pdf.addImage(canvas.toDataURL('image/png'),'PNG',x+2.5,177,48.2,13.8)}
+  }
+  if(document.getElementById('cut').checked){pdf.setDrawColor(180,188,198);pdf.setLineWidth(.15);pdf.setLineDashPattern([1,1],0);pdf.line(148.5,0,148.5,210);pdf.setLineDashPattern([],0)}
+ }
+ pdf.save('qris-print-a4.pdf');
+ }catch(err){alert('PDF gagal dibuat. Pastikan gambar dapat dibuka lalu coba lagi.');console.error(err)}
+ finally{generate.disabled=!items.length;generate.textContent='Generate PDF'}
+};
+</script>
+</body></html>
