@@ -1,198 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b4f91">
 <title>QRIS Print Studio</title>
 <style>
 :root{--blue:#07549b;--ink:#172033;--muted:#687386;--line:#e3e8ef;--bg:#f4f7fb}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink)}
-header{background:linear-gradient(120deg,#063d73,#0874bd);color:#fff;padding:26px max(20px,calc((100% - 1120px)/2))}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#063d73,#0874bd);color:white;padding:26px max(20px,calc((100% - 1080px)/2))}
 header h1{font-size:clamp(23px,4vw,32px);margin:0 0 6px}header p{margin:0;color:#d9ebfa;font-size:14px}
-main{max-width:1120px;margin:26px auto;padding:0 18px 50px;display:grid;grid-template-columns:minmax(280px,370px) minmax(0,1fr);gap:20px}
-.panel,.preview-panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 18px #152d4a0a;min-width:0}
-h2{font-size:17px;margin:0 0 14px}
-.drop{display:block;border:2px dashed #9db6cf;background:#f7fbff;border-radius:12px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s}
-.drop.drag{background:#eaf5ff;border-color:var(--blue)}.drop strong{display:block;margin:8px 0 4px}.drop small{color:var(--muted)}
-input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:650;cursor:pointer;background:var(--blue);color:#fff}
-.btn.secondary{background:#eaf1f8;color:#17456e}.btn:disabled{opacity:.45;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.options{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
-.check{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#35445a;line-height:1.45}.check input{margin-top:3px;accent-color:var(--blue)}
-.hint{font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0}
-.file-list{margin-top:16px;display:grid;gap:8px}
-.file-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:9px;font-size:12px}
-.thumb{width:38px;height:48px;object-fit:contain;background:#f1f4f7;border-radius:4px}
-.filename{flex:1;min-width:0;overflow-wrap:anywhere}.remove{border:0;background:none;color:#b42318;font-size:18px;cursor:pointer}
-.control{margin:13px 0}.control-head{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
-.control output{font-variant-numeric:tabular-nums;color:#07549b;font-weight:700}
-input[type=range]{width:100%;accent-color:#07549b;cursor:pointer}
-.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.preview-head h2{margin:0}.count{font-size:12px;color:var(--muted)}
-.pages{display:grid;gap:16px}
-.sheet{width:100%;aspect-ratio:297/210;background:#fff;border:1px solid #d8dee8;box-shadow:0 4px 15px #1c35500c;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
-.half{position:relative;min-width:0;overflow:hidden;border-right:1px dashed #cbd3de;background:#fff}
-.half:last-child{border:0}.half img.qr{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.half img.bca{position:absolute;height:auto;max-width:90%;object-fit:contain;pointer-events:none}
-.empty{min-height:250px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px}
-.empty span{font-size:36px;display:block;margin-bottom:8px}
-.status{font-size:12px;color:#a33;margin-top:8px;min-height:16px}
+main{max-width:1080px;margin:26px auto;padding:0 18px 50px;display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:20px}
+.panel,.preview-panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 18px #152d4a0a}
+h2{font-size:17px;margin:0 0 14px}.drop{border:2px dashed #9db6cf;background:#f7fbff;border-radius:12px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s}.drop.drag{background:#eaf5ff;border-color:var(--blue)}.drop strong{display:block;margin:8px 0 4px}.drop small{color:var(--muted)}
+input[type=file]{display:none}.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:650;cursor:pointer;background:var(--blue);color:white}.btn.secondary{background:#eaf1f8;color:#17456e}.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.options{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}.check{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#35445a;line-height:1.45}.check input{margin-top:3px;accent-color:var(--blue)}
+.hint{font-size:12px;color:var(--muted);line-height:1.5;margin:12px 0 0}.file-list{margin-top:16px;display:grid;gap:8px}.file-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:9px;font-size:12px}.thumb{width:38px;height:48px;object-fit:cover;background:#f1f4f7;border-radius:4px}.filename{flex:1;min-width:0;overflow-wrap:anywhere}.remove{border:0;background:none;color:#b42318;font-size:18px;cursor:pointer}
+.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.preview-head h2{margin:0}.count{font-size:12px;color:var(--muted)}
+.pages{display:grid;gap:16px}.sheet{width:100%;aspect-ratio:297/210;background:white;border:1px solid #d8dee8;box-shadow:0 4px 15px #1c35500c;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}.half{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-right:1px dashed #cbd3de}.half:last-child{border:0}.half img.qr{width:100%;height:100%;object-fit:contain}.half .bca{position:absolute;left:1.2%;bottom:1.5%;width:32%;height:auto;max-height:9%;object-fit:contain;object-position:left bottom}
+.empty{height:250px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px}.empty span{font-size:36px;display:block;margin-bottom:8px}
 footer{text-align:center;color:#8290a2;font-size:11px;padding:0 15px 25px}
-@media(max-width:820px){main{grid-template-columns:1fr;margin-top:16px;padding:0 12px 32px;gap:14px}.panel,.preview-panel{padding:16px}.preview-panel{overflow:hidden}.pages{overflow-x:auto;padding-bottom:8px}.sheet{min-width:520px}.preview-head{align-items:flex-start;flex-direction:column}header{padding:22px 18px}}
-@media print{
- @page{size:A4 landscape;margin:0}
- body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
- header,main .panel,.preview-head,footer{display:none!important}
- main{display:block;max-width:none;margin:0;padding:0}
- .preview-panel{border:0;padding:0;box-shadow:none}
- .pages{display:block}.sheet{width:297mm;height:210mm;aspect-ratio:auto;border:0;box-shadow:none;page-break-after:always;break-after:page}
- .sheet:last-child{page-break-after:auto;break-after:auto}
- .half{border:0}.half:first-child{border-right:.2mm dashed #aaa}
-}
+@media(max-width:780px){main{grid-template-columns:1fr;margin-top:16px;padding:0 12px 32px;gap:14px}.panel,.preview-panel{padding:16px}.preview-panel{overflow:hidden}.sheet{min-width:480px}.pages{overflow-x:auto;padding-bottom:8px}.preview-head{align-items:flex-start;flex-direction:column}header{padding:22px 18px}}
+@media print{body{background:white}header,main .panel,.preview-head,footer{display:none!important}main{display:block;max-width:none;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none}.pages{display:block}.sheet{width:297mm;height:210mm;aspect-ratio:auto;border:0;box-shadow:none;page-break-after:always;break-after:page}.sheet:last-child{page-break-after:auto;break-after:auto}.half{border:0}.half:first-child{border-right:.2mm dashed #aaa}}
 </style>
 </head>
 <body>
 <header><h1>QRIS Print Studio</h1><p>Susun gambar QRIS menjadi lembar A4 landscape berisi dua kartu ukuran A5.</p></header>
 <main>
 <section class="panel">
- <h2>1. Upload gambar QRIS</h2>
- <label class="drop" id="drop" for="files"><span style="font-size:30px">⬆️</span><strong>Pilih atau tarik gambar ke sini</strong><small>JPG, PNG, atau WEBP · bisa lebih dari satu gambar</small></label>
- <input id="files" type="file" accept="image/png,image/jpeg,image/webp" multiple>
- <div class="actions"><button class="btn secondary" id="choose" type="button">Pilih gambar</button><button class="btn secondary" id="clear" type="button">Hapus semua</button></div>
- <div id="fileList" class="file-list"></div>
- <div class="options">
-  <h2>2. Pengaturan logo BCA</h2>
-  <label class="check"><input type="checkbox" id="logoEnabled" checked><span>Tampilkan logo BCA pada setiap kartu</span></label>
-  <div id="logoControls">
-   <div class="control"><div class="control-head"><label for="logoSize">Ukuran logo</label><output id="sizeValue">32%</output></div><input id="logoSize" type="range" min="5" max="65" value="32"></div>
-   <div class="control"><div class="control-head"><label for="logoX">Posisi horizontal (kiri → kanan)</label><output id="xValue">2%</output></div><input id="logoX" type="range" min="0" max="90" value="2"></div>
-   <div class="control"><div class="control-head"><label for="logoY">Posisi vertikal (atas → bawah)</label><output id="yValue">82%</output></div><input id="logoY" type="range" min="0" max="95" value="82"></div>
-   <p class="hint">Geser pengaturan untuk mengubah ukuran dan posisi logo. Perubahan langsung terlihat pada pratinjau dan akan diterapkan pada PDF.</p>
-  </div>
-  <div class="control" style="border-top:1px solid var(--line);padding-top:14px">
-   <label class="check"><input type="checkbox" id="cut" checked><span>Tampilkan garis potong di tengah lembar A4</span></label>
-  </div>
-  <p class="hint">Dua gambar ditempatkan berdampingan dalam satu lembar A4 landscape. Jika jumlah gambar ganjil, sisi terakhir dibiarkan kosong.</p>
- </div>
- <div class="actions"><button class="btn" id="generate" disabled type="button">Generate PDF</button></div>
- <p class="hint">PDF dibuat langsung di browser. Gambar tidak dikirim ke server dan tidak membutuhkan database.</p>
- <div id="status" class="status" role="status"></div>
+<h2>1. Upload gambar QRIS</h2>
+<label class="drop" id="drop" for="files"><span style="font-size:30px">⬆️</span><strong>Pilih atau tarik gambar ke sini</strong><small>JPG, PNG, atau WEBP · bisa lebih dari satu gambar</small></label>
+<input id="files" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+<div class="actions"><button class="btn secondary" id="choose">Pilih gambar</button><button class="btn secondary" id="clear">Hapus semua</button></div>
+<div id="fileList" class="file-list"></div>
+<div class="options">
+<h2>2. Pengaturan cetak</h2>
+<label class="check"><input type="checkbox" id="logo" checked><span>Tampilkan logo BCA di pojok kiri bawah setiap kartu A5</span></label>
+<label class="check" style="margin-top:12px"><input type="checkbox" id="cut" checked><span>Tampilkan garis potong di tengah lembar A4 (tidak ikut dicetak tebal)</span></label>
+<p class="hint">Dua gambar ditempatkan berdampingan dalam satu lembar A4 landscape. Jika jumlah gambar ganjil, sisi terakhir akan dibiarkan kosong.</p>
+</div>
+<div class="actions"><button class="btn" id="generate" disabled>Generate PDF</button></div>
+<p class="hint">PDF dibuat langsung di browser. Gambar tidak diunggah ke server dan tidak membutuhkan database.</p>
 </section>
 <section class="preview-panel">
- <div class="preview-head"><h2>Pratinjau hasil</h2><span class="count" id="count">Belum ada gambar</span></div>
- <div id="pages" class="pages"><div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div></div>
+<div class="preview-head"><h2>Pratinjau hasil</h2><span class="count" id="count">Belum ada gambar</span></div>
+<div id="pages" class="pages"><div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div></div>
 </section>
 </main>
-<footer>QRIS Print Studio · Berjalan langsung di browser · Pastikan QRIS terbaca sebelum dicetak massal.</footer>
+<footer>QRIS Print Studio · Siap digunakan di GitHub Pages · Pastikan QRIS terbaca sebelum dicetak massal.</footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-'use strict';
-const $ = id => document.getElementById(id);
-const fileInput=$('files'), drop=$('drop'), list=$('fileList'), pages=$('pages'), count=$('count'), generate=$('generate');
-const logoDataUrl='data:image/png;base64,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';
+const fileInput=document.getElementById('files'),drop=document.getElementById('drop'),list=document.getElementById('fileList'),pages=document.getElementById('pages'),count=document.getElementById('count'),generate=document.getElementById('generate');
 let items=[];
-let logoImage=null;
-function setStatus(message){$('status').textContent=message||'';}
-function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('Gambar tidak dapat dibaca'));im.src=src;});}
-loadImage(logoDataUrl).then(im=>{logoImage=im;render();}).catch(()=>{logoImage=null;setStatus('Logo BCA bawaan tidak dapat dimuat.');});
-$('choose').addEventListener('click',()=>fileInput.click());
-fileInput.addEventListener('change',e=>{addFiles(e.target.files);fileInput.value='';});
-['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag');}));
-['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag');}));
+const logoUrl=new URL('assets/bca-logo.png',document.baseURI).href;
+document.getElementById('choose').onclick=()=>fileInput.click();
+fileInput.addEventListener('change',e=>{addFiles(e.target.files);fileInput.value=''});
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));
 drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
-function addFiles(files){
- const valid=[...files].filter(f=>/^image\/(png|jpeg|webp)$/.test(f.type));
- if(!valid.length){setStatus('Pilih file gambar PNG, JPG, atau WEBP.');return;}
- valid.forEach(file=>items.push({file,url:URL.createObjectURL(file)}));
- setStatus(valid.length+' gambar berhasil ditambahkan.');render();
-}
-function logoSettings(){
- return {enabled:$('logoEnabled').checked,size:Number($('logoSize').value),x:Number($('logoX').value),y:Number($('logoY').value)};
-}
-function applyLogoStyle(el){
- const s=logoSettings();
- el.style.display=s.enabled?'block':'none';
- el.style.width=s.size+'%';
- el.style.left=s.x+'%';
- el.style.top=s.y+'%';
-}
+function addFiles(files){[...files].filter(f=>/^image\/(png|jpeg|webp)$/.test(f.type)).forEach(file=>{const url=URL.createObjectURL(file);items.push({file,url,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())})});render()}
 function render(){
- list.innerHTML='';
- items.forEach((it,i)=>{
-  const row=document.createElement('div');row.className='file-row';
-  const thumb=document.createElement('img');thumb.className='thumb';thumb.src=it.url;thumb.alt='';
-  const name=document.createElement('span');name.className='filename';name.textContent=it.file.name;
-  const remove=document.createElement('button');remove.className='remove';remove.type='button';remove.title='Hapus gambar';remove.textContent='×';
-  remove.addEventListener('click',()=>{URL.revokeObjectURL(it.url);items.splice(i,1);render();});
-  row.append(thumb,name,remove);list.append(row);
- });
- count.textContent=items.length?`${items.length} gambar · ${Math.ceil(items.length/2)} lembar A4`:'Belum ada gambar';
- generate.disabled=!items.length;
- $('logoControls').style.opacity=$('logoEnabled').checked?'1':'.45';
- $('logoControls').style.pointerEvents=$('logoEnabled').checked?'auto':'none';
- if(!items.length){pages.innerHTML='<div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div>';return;}
- pages.innerHTML='';
- for(let i=0;i<items.length;i+=2){
-  const sheet=document.createElement('div');sheet.className='sheet';
-  for(let j=0;j<2;j++){
-   const half=document.createElement('div');half.className='half';
-   const it=items[i+j];
-   if(it){const img=document.createElement('img');img.className='qr';img.src=it.url;img.alt='QRIS '+(i+j+1);half.append(img);}
-   if(logoImage && $('logoEnabled').checked){const logo=document.createElement('img');logo.className='bca';logo.src=logoDataUrl;logo.alt='Logo BCA';applyLogoStyle(logo);half.append(logo);}
-   if(j===0 && $('cut').checked)half.style.borderRight='1px dashed #9aa8b8';
-   sheet.append(half);
-  }
-  pages.append(sheet);
- }
+ list.innerHTML='';items.forEach((it,i)=>{const row=document.createElement('div');row.className='file-row';row.innerHTML=`<img class="thumb" src="${it.url}" alt=""><span class="filename"></span><button class="remove" title="Hapus gambar" aria-label="Hapus gambar">×</button>`;row.querySelector('.filename').textContent=it.file.name;row.querySelector('button').onclick=()=>{URL.revokeObjectURL(it.url);items.splice(i,1);render()};list.append(row)});
+ count.textContent=items.length?`${items.length} gambar · ${Math.ceil(items.length/2)} lembar A4`:'Belum ada gambar';generate.disabled=!items.length;
+ if(!items.length){pages.innerHTML='<div class="empty"><div><span>🖨️</span>Upload gambar QRIS untuk melihat pratinjau cetak.</div></div>';return}
+ pages.innerHTML='';for(let i=0;i<items.length;i+=2){const sheet=document.createElement('div');sheet.className='sheet';for(let j=0;j<2;j++){const half=document.createElement('div');half.className='half';if(items[i+j]){const img=document.createElement('img');img.className='qr';img.src=items[i+j].url;img.alt='QRIS '+(i+j+1);half.append(img);if(document.getElementById('logo').checked){const logo=document.createElement('img');logo.className='bca';logo.src=logoUrl;logo.alt='Logo BCA';half.append(logo)}}if(j===0&&document.getElementById('cut').checked)half.style.borderRight='1px dashed #9aa8b8';sheet.append(half)}pages.append(sheet)}
 }
-$('clear').addEventListener('click',()=>{items.forEach(x=>URL.revokeObjectURL(x.url));items=[];setStatus('');render();});
-['logoEnabled','logoSize','logoX','logoY','cut'].forEach(id=>$(id).addEventListener('input',()=>{
- $('sizeValue').textContent=$('logoSize').value+'%';
- $('xValue').textContent=$('logoX').value+'%';
- $('yValue').textContent=$('logoY').value+'%';
- render();
-}));
-function imageToPng(im){
- const canvas=document.createElement('canvas');canvas.width=im.naturalWidth||im.width;canvas.height=im.naturalHeight||im.height;
- const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(im,0,0);
- return canvas.toDataURL('image/png');
-}
-function drawFit(pdf,dataUrl,im,x,y,w,h){
- const scale=Math.min(w/im.width,h/im.height),dw=im.width*scale,dh=im.height*scale;
- pdf.addImage(dataUrl,'PNG',x+(w-dw)/2,y+(h-dh)/2,dw,dh);
-}
-$('generate').addEventListener('click',async()=>{
- if(!items.length)return;
- if(!window.jspdf){setStatus('Library PDF belum termuat. Periksa koneksi internet lalu muat ulang halaman.');return;}
- generate.disabled=true;generate.textContent='Membuat PDF…';setStatus('');
+document.getElementById('clear').onclick=()=>{items.forEach(x=>URL.revokeObjectURL(x.url));items=[];render()};
+document.getElementById('logo').onchange=render;document.getElementById('cut').onchange=render;
+function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src})}
+function drawFit(pdf,img,x,y,w,h){const scale=Math.min(w/img.width,h/img.height),dw=img.width*scale,dh=img.height*scale;pdf.addImage(img,'PNG',x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+generate.onclick=async()=>{
+ if(!items.length)return;generate.disabled=true;generate.textContent='Membuat PDF…';
  try{
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
-  const s=logoSettings();
-  for(let i=0;i<items.length;i+=2){
-   if(i>0)pdf.addPage('a4','landscape');
-   for(let j=0;j<2;j++){
-    const it=items[i+j];if(!it)continue;
-    const im=await loadImage(it.url),png=imageToPng(im),x=j*148.5;
-    drawFit(pdf,png,im,x,0,148.5,210);
-    if(s.enabled && logoImage){
-     const logoW=148.5*s.size/100;
-     const logoH=logoW*(logoImage.naturalHeight/logoImage.naturalWidth);
-     const logoX=x+148.5*s.x/100;
-     const logoY=210*s.y/100;
-     pdf.addImage(logoDataUrl,'PNG',logoX,logoY,logoW,logoH);
-    }
-   }
-   if($('cut').checked){pdf.setDrawColor(180,188,198);pdf.setLineWidth(.15);pdf.setLineDashPattern([1,1],0);pdf.line(148.5,0,148.5,210);pdf.setLineDashPattern([],0);}
+ const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
+ const logo=document.getElementById('logo').checked?await loadImage(logoUrl):null;
+ for(let i=0;i<items.length;i+=2){if(i>0)pdf.addPage('a4','landscape');
+  for(let j=0;j<2;j++){const it=items[i+j];if(!it)continue;const im=await loadImage(it.url);const x=j*148.5;drawFit(pdf,im,x,0,148.5,210);
+   if(logo){const canvas=document.createElement('canvas');canvas.width=logo.naturalWidth;canvas.height=logo.naturalHeight;canvas.getContext('2d').drawImage(logo,0,0);pdf.addImage(canvas.toDataURL('image/png'),'PNG',x+2.5,177,48.2,13.8)}
   }
-  pdf.save('qris-print-a4.pdf');setStatus('PDF berhasil dibuat.');
- }catch(err){console.error(err);setStatus('PDF gagal dibuat. Periksa gambar dan coba lagi.');}
- finally{generate.disabled=!items.length;generate.textContent='Generate PDF';}
-});
-render();
+  if(document.getElementById('cut').checked){pdf.setDrawColor(180,188,198);pdf.setLineWidth(.15);pdf.setLineDashPattern([1,1],0);pdf.line(148.5,0,148.5,210);pdf.setLineDashPattern([],0)}
+ }
+ pdf.save('qris-print-a4.pdf');
+ }catch(err){alert('PDF gagal dibuat. Pastikan gambar dapat dibuka lalu coba lagi.');console.error(err)}
+ finally{generate.disabled=!items.length;generate.textContent='Generate PDF'}
+};
 </script>
-</body>
-</html>
+</body></html>
